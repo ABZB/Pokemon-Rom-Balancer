@@ -1,5 +1,6 @@
-
 Instuctions:
+
+The user can use the included text.txt, and skip steps 4 through 6
 
 1) Decompress & Extract Ultra Sun or Ultra Moon
 
