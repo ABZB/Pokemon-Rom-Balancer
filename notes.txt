@@ -1,0 +1,211 @@
+Gen IV
+
+
+	HGSS:
+
+		1) Use PPRE or other tool to extract the files from the nds file
+
+		2) Open a/0/0/2
+
+		3) Go to address 0x1040
+
+
+Gen V:
+	a/0/1/6
+	Personal bytes:
+	0) HP
+	1) Attack
+	2) Defense
+	3) Speed
+	4) Special Attack
+	5) Special Defense
+	6) Type 1
+	7) Type 2
+	8) Catch rate
+	9) Evolutionary stage (number of previous stages + 1)
+	10) EVs
+	11) EVs
+	12) wild hold item 1 low digit
+	13) wild hold item 1 high digit
+	14) wild hold item 2 low digit
+	15) wild hold item 2 high digit
+	16) wild hold item dream world low digit
+	17)wild hold item dream world high digit
+	18) Gender ratio
+	19) Egg cycle number (because of game mechanics, the coded value is one less than the actual)
+	20) Base happiness
+	21) EXP function
+	22) Egg group 1
+	23) Egg group 2
+	24) Ability 1
+	25) Ability 2
+	26) Ability Hidden
+	27) Flee rate
+	28) offset to next forme data low digit
+	29) offset to next forme data high digit
+	30) offset to next forme sprite low digit
+	31) offset to next forme sprite high digit
+	32) number of formes (including itself (e.g. Bulbasaur has value 0x01 here))
+	33) color (for dex)
+	34) base exp low digit
+	35) base exp high digit
+	36) low digitt low digit
+	37) low digit high digit
+	38) weight low digit
+	39) weight high digit
+	40) TMs 1-8
+	41) TMs 9 - 16
+	42) TMs 17 - 24
+	43) TMs 25 -32
+	44) TMs 33 - 40
+	45) TMs 41 - 48
+	46) TMs 49 - 56
+	47) TMs 57 - 64
+	48) TMs 65 - 72
+	49) TMs 73 - 80
+	50) TMs 81 - 88
+	51) TMs 89 - 92, HM 1 - 4
+	52) HM 5 - 6, TM 93 - 95
+	53) blank, technically more TMs could fit here
+	54)blank, technically more TMs could fit here
+	55)blank, technically more TMs could fit here
+	56) from right to left, the bits are for the Starter move tutors, pledges then ultimates, in the order grass-fire-water, then the 7th bit is for Draco Meteor
+	57) blank
+	58) blank
+	59) blank
+	60) Driftviel tutor: from right to left:
+			0C-1: Bug Bite (C2 01)
+			0C-2: Covet (57 01)
+			0C-3: Super Fang (A2 00)
+			0C-4: Dual Chop (12 02)
+			0C-5: Signal Beam (44 01)
+			0C-6: Iron Head (BA 01)
+			0C-7: Seed Bomb (92 01)
+			0C-8: Drill Run (11 02)
+	61) Driftviel tutor: from right to left
+			0D-1: Bounce (54 01)
+			0D-2: Low Kick (43 00)
+			0D-3: Gunk Shot (B9 01)
+			0D-4: Uproar (FD 00)
+			0D-5: ThunderPunch (09 00)
+			0D-6: Fire Punch (07 00)
+			0D-7: Ice Punch (08 00)
+	62) blank
+	63) blank
+	64) Lentimas tutor: from right to left:
+			00-1: Magic Coat (15 01)
+			00-2: Block (4F 01)
+			00-3: Earth Power (9E 01)
+			00-4: Foul Play (EC 01)
+			00-5: Gravity (64 01)
+			00-6: Magnet Rise (89 01)
+			00-7: Iron Defense (4E 01)
+			00-8: Last Resort (83 01)
+	65) Lentimas tutor: from right to left:
+			01-1: Superpower (14 01)
+			01-2: Electroweb (0F 02)
+			01-3: Icy Wind (C4 00)
+			01-4: Aqua Tail (91 01)
+			01-5: Dark Pulse (8F 01)
+			01-6: Zen Headbutt (AC 01)
+			01-7: Dragon Pulse (96 01)
+			01-8: Hyper Voice (30 01)
+	66) Lentimas tutor: from right to left:
+			01-1: Iron Tail
+	67) blank
+	68) Humilau Tutor:
+			04-1: Bind (14 00)
+			04-2: Snore (AD 00)
+			04-3: Knock Off (1A 01)
+			04-4: Synthesis (EB 00)
+			04-5: Heat Wave (01 01)
+			04-6: Role Play (10 01)
+			04-7: Heal Bell (D7 00)
+			04-8: Tailwind (6E 01)
+	69) Humilau Tutor:
+			05-1: Sky Attack (8F 00)
+			05-2: Pain Split (DC 00)
+			05-3: Giga Drain (CA 00)
+			05-4: Drain Punch (99 01)
+			05-5: Roost (63 01)
+	70) blank
+	71) blank
+	72) Nacrene Tutor:
+			08-1: Gastro Acid (7C 01)
+			08-2: Worry Seed (84 01)
+			08-3: Spite (B4 00)
+			08-4: After You (EF 01)
+			08-5: Helping Hand (0E 01)
+			08-6: Trick (0F 01)
+			08-7: Magic Room (DE 01)
+			08-8: Wonder Room (D8 01)
+	73) Nacrene Tutor:
+			09-1: Endeavor (1B 01)
+			09-2: Outrage (C8 00)
+			09-3: Recycle (16 01)
+			09-4: Snatch (21 01)
+			09-5: Stealth Rock (BE 01)
+			09-6: Sleep Talk (D6 00)
+			09-7: Skill Swap (1D 01)
+	74) blank
+	75) blank
+	
+	
+	
+	Black2/White2
+	
+		1) extract a/0/1/6
+		block size 0x4C = dec 76
+		data starts at 16B0
+
+
+
+
+
+
+
+
+Gen VII
+
+
+	The user can use the included text.txt, and skip steps 4 through 6
+
+	1) Decompress & Extract Ultra Sun or Ultra Moon
+
+	2) Open the folder "ExtractedRomFS/a/0/1/"
+
+	3) Open the file 7
+
+	4) Go to the address 4CF0 (it will be the start of the line)
+
+	5) Select everything from there to the end of the file
+
+	6) Copy the selected text into a text file, name it "text.txt", and place it in the same folder as 600 Balancer
+
+	7) Run 600 Balancer.exe
+
+	8) Open output_text.txt
+
+	9) Select All, then copy
+
+	10) In your Hex Editor, select all the text from 4CF0 to the end of the file
+
+	11) paste
+
+	12) Save and exit the hex editor
+
+	13) Either recompile or grab the a/0/1/7 if you're using Luma
+
+	Note: The whole thing with copying to the text editor happened because I had initially done so to use notepad++ to find various data, and check what I was editing, and along the way I forgot to write the script to edit the hex file directly. I'll probably get around to doing that.
+
+
+
+
+
+UM a017 start from 4CF0
+
+second copy starts from 18D30
+
+a017
+
+
