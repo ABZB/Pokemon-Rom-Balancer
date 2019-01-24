@@ -1,5 +1,6 @@
 Section I: Purpose
 
+	To make all Pokemon competitive. The difficulty is also  increased, as even a Raticate has a BST of 600.
 
 Section II: Description of Edits
 	This program scales the Base Stat Totals of all Pokemon as follows:
