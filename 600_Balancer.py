@@ -381,7 +381,7 @@ def report_original_stats(gen_number):
 			position += 3
 
 #report_original_stats(7)
-manipulate(7)
+manipulate(4)
 
 
 

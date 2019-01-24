@@ -1,0 +1,10 @@
+*.spec
+*.pyc
+*.zip
+*.toc
+*.pyz
+*.pkg
+*.manifest
+*.pyo
+*.html
+*warn-*
