@@ -26,24 +26,39 @@ Section II: Description of Edits
     Details, including a Speed Tier calculator, can be found in the included Excel file.
 
 
-Section III: Instructions
+Section III: Instructions 
 
-	1) Decompress the NDS or 3DS file using an appropriate tool.
+	(A) Gen IV and later
 
-	2) Run 600 Balancer
+		1) Decompress the NDS or 3DS file using an appropriate tool.
 
-	3) Select the appropriate target game.
+		2) Run 600 Balancer
 
-	4) Select the appropriate file:
+		3) Select the appropriate target game.
 
-			* HGSS: /a/0/0/2
-			* B2W2: /a/0/1/6
-			* USUSM: a/0/1/7
+		4) Select the appropriate file:
 
-	5) You will be prompted to save a backup of the original file.
-	
-	6) You will be prompted to save the edited file.
-	
-	7) Exit 600 Balancer
-	
-	7) Rebuild the file or use Luma, Hands, etc. as desired.
+				* HGSS: /a/0/0/2
+				* B2W2: /a/0/1/6
+				* USUSM: a/0/1/7
+
+		5) You will be prompted to save a backup of the original file.
+		
+		6) You will be prompted to save the edited file.
+		
+		7) Exit 600 Balancer
+		
+		7) Rebuild the file or use Luma, Hans, etc. as desired.
+
+	(B) Gen III
+		1) Run 600 Balancer
+		
+		2) Select target game.
+		
+		3) Select the .gba file
+
+		4) You will be prompted to save a backup of the original file.
+		
+		5) You will be prompted to save the edited file.
+		
+		6) Exit 600 Balancer

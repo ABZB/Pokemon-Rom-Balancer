@@ -56,38 +56,58 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 				if(dex_number == 701):
 					stat_arr[0] = output_stats[555][1][0]
 
-			print(dex_number, stat_arr)
+			#print(dex_number, stat_arr)
+			
 			#scale the stats
-			for counter, stat in enumerate(stat_arr):
-				
-				#evolves one more time
-				if(pokemon[dex_number][1] == 1):
-					stat_arr[counter] = round((stat*400)/stat_sum)
-				#evolves two more times
-				elif(pokemon[dex_number][1] == 2):
-					stat_arr[counter] = round((stat*300)/stat_sum)
-				#shedinja, scale everything as if to 400 but don't scale HP
-				elif(dex_number == 292):
-					if(counter != 0):
-						stat_arr[counter] = round((stat*400)/(stat_sum))			
-				#fully evolved or Legendary with <= 600 BST (scale to 600)
-				elif(pokemon[dex_number][1] == 0 or pokemon[dex_number][1] == 5):
-					stat_arr[counter] = round((stat*600)/stat_sum)
-				#Mega Evolution of a Pokemon with <= 600 BST (Mega has <= 700 BST) (scale to 700)
-				elif(pokemon[dex_number][1] == 6):
-					#don't change HP
-					if(counter != 0):
-						stat_arr[counter] = round((stat*(700 - stat_arr[0]))/(stat_sum - stat_arr[0]))
-				elif(pokemon[dex_number][1] == 8):
-					#don't change HP
-					if(counter != 0):
-						stat_arr[counter] = round((stat*(600 - stat_arr[0]))/(stat_sum - stat_arr[0]))
-				#Legendary with BST > 600 (no scale)
-				elif(pokemon[dex_number][1] == 4):
-					stat_arr[counter] = stat
-				#egg (no scale)
-				elif(pokemon[dex_number][1] == 3):
-					stat_arr[counter] = stat
+			
+			#gen III has different index numbers
+			if(gen_number == 3.1 or gen_number == 3.2):
+				bst = stat_arr[0] + stat_arr[1] + stat_arr[2] + stat_arr[3] + stat_arr[4] + stat_arr[5] 
+				for counter, stat in enumerate(stat_arr):
+					#shedinja, scale everything as if to 400 but don't scale HP
+					if(dex_number == 303):
+						if(counter != 0):
+							stat_arr[counter] = round((stat*400)/(stat_sum))
+					#slakoth
+					elif(dex_number == 364):
+						stat_arr[counter] = round((stat*500)/stat_sum)
+					#slaking
+					elif(dex_number == 366):
+						stat_arr[counter] = round((stat*720)/stat_sum)	
+					#evolves once more
+					elif(pokemon[dex_number][1] == 1):
+						stat_arr[counter] = round((stat*450)/stat_sum)
+					#evolves twice more
+					elif(pokemon[dex_number][1] == 2):
+						stat_arr[counter] = round((stat*300)/stat_sum)
+					#everything else that isn't greater than 600 gets scaled to 600
+					elif(bst < 600):
+						stat_arr[counter] = round((stat*600)/stat_sum)
+					
+			else:
+				for counter, stat in enumerate(stat_arr):
+					#evolves one more time
+					if(pokemon[dex_number][1] == 1):
+						stat_arr[counter] = round((stat*450)/stat_sum)
+					#evolves two more times
+					elif(pokemon[dex_number][1] == 2):
+						stat_arr[counter] = round((stat*300)/stat_sum)
+					#shedinja, scale everything as if to 400 but don't scale HP
+					elif(dex_number == 292):
+						if(counter != 0):
+							stat_arr[counter] = round((stat*400)/(stat_sum))		
+					#fully evolved or Legendary with <= 600 BST (scale to 600)
+					elif(pokemon[dex_number][1] == 0 or pokemon[dex_number][1] == 5):
+						stat_arr[counter] = round((stat*600)/stat_sum)
+					#Mega Evolution of a Pokemon with <= 600 BST (Mega has <= 700 BST) (scale to 700)
+					elif(pokemon[dex_number][1] == 6):
+						#don't change HP
+						if(counter != 0):
+							stat_arr[counter] = round((stat*(700 - stat_arr[0]))/(stat_sum - stat_arr[0]))
+					elif(pokemon[dex_number][1] == 8):
+						#don't change HP
+						if(counter != 0):
+							stat_arr[counter] = round((stat*(600 - stat_arr[0]))/(stat_sum - stat_arr[0]))
 			
 			#if stat is over 255, redistribute the excess
 			while True:
@@ -170,6 +190,8 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 				else:
 					stat_number += 1
 					pointer += 1
+					
+			
 			#The below offset shifts (19 from the sixth DV to the first Ability) did change from Gen IV to Gen IV, at least
 			#change Slakoth's and Slaking's Abilities to Comatose (D5) in gen VII and on, Unaware (6D) otherwise
 			if(dex_number == 287 or dex_number == 289):
@@ -199,20 +221,25 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 						pointer = second_offset
 						#will get incremented at the end of the loop
 						dex_number = 0
-						
+					#otherwise print the results and finish
+					else:
 						#print list of modified stats
 						for elm in output_stats:
-							print(elm)	
-						
+							print(elm)
+							
 						#print mega and base list
 						if(gen_number >= 6):
 							print('\n')
 							for elm in mega_list:
 								print(output_stats[elm[0]])
 								print("m", output_stats[elm[1]])
-					else:		
 						break
+				#otherwise print the results and finish
 				else:
+					#print list of modified stats
+					for elm in output_stats:
+						print(elm)
+
 					break
 				
 			#zero out the stat array and sum
@@ -301,6 +328,10 @@ def main_menu():
 		
 	root_main_menu.title('Select Game to modify')
 
+	Button(frame_main_menu, text = 'Fire Red/Leaf Green', command = lambda: main('3.1'), height = 2, width = 50, pady = 1).pack()
+	
+	Button(frame_main_menu, text = 'Emerald', command = lambda: main('3.2'), height = 2, width = 50, pady = 1).pack()
+	
 	Button(frame_main_menu, text = 'Heart Gold/Soul Silver', command = lambda: main('4.1'), height = 2, width = 50, pady = 1).pack()
 	
 	Button(frame_main_menu, text = 'Black2/White2', command = lambda: main('5.1'), height = 2, width = 50, pady = 1).pack()
