@@ -67,22 +67,36 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 					#shedinja, scale everything as if to 400 but don't scale HP
 					if(dex_number == 303):
 						if(counter != 0):
-							stat_arr[counter] = round((stat*400)/(stat_sum))
+							stat_arr[counter] = round((stat*400)/stat_sum)
+						if(counter == 0):
+							personal[pointer + 4] = min(round((stat*400)/stat_sum), 255)
 					#slakoth
 					elif(dex_number == 364):
 						stat_arr[counter] = round((stat*500)/stat_sum)
+						if(counter == 0):
+							personal[pointer + 4] = min(round((stat*500)/stat_sum), 255)
 					#slaking
 					elif(dex_number == 366):
 						stat_arr[counter] = round((stat*720)/stat_sum)	
+						if(counter == 0):
+							personal[pointer + 4] = min(round((stat*720)/stat_sum), 255)
 					#evolves once more
 					elif(pokemon[dex_number][1] == 1):
 						stat_arr[counter] = round((stat*450)/stat_sum)
+						if(counter == 0):
+							personal[pointer + 4] = min(round((stat*450)/stat_sum), 255)
 					#evolves twice more
 					elif(pokemon[dex_number][1] == 2):
 						stat_arr[counter] = round((stat*300)/stat_sum)
+						if(counter == 0):
+							personal[pointer + 4] = min(round((stat*300)/stat_sum), 255)
 					#everything else that isn't greater than 600 gets scaled to 600
 					elif(bst < 600):
 						stat_arr[counter] = round((stat*600)/stat_sum)
+						if(counter == 0):
+							personal[pointer + 4] = min(round((stat*600)/stat_sum), 255)
+						
+					
 					
 			else:
 				for counter, stat in enumerate(stat_arr):
