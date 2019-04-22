@@ -8,3 +8,5 @@
 *.pyo
 *.html
 *warn-*
+reset.py
+dist/reset.exe
