@@ -39,6 +39,7 @@ Section III: Instructions
 		4) Select the appropriate file:
 
 				* HGSS: /a/0/0/2
+				* Platinum /poketool/personal/pl_personal.narc
 				* B2W2: /a/0/1/6
 				* USUSM: a/0/1/7
 
