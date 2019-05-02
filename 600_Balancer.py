@@ -109,7 +109,13 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 					#shedinja, scale everything as if to 400 but don't scale HP
 					elif(dex_number == 292):
 						if(counter != 0):
-							stat_arr[counter] = round((stat*400)/(stat_sum))		
+							stat_arr[counter] = round((stat*400)/(stat_sum))
+					#Slakoth
+					elif(dex_number == 287 and gen_number < 7):
+						stat_arr[counter] = round((stat*600)/stat_sum)
+					#slaking
+					elif(dex_number == 289 and gen_number < 7):
+						stat_arr[counter] = round((stat*720)/stat_sum)
 					#fully evolved or Legendary with <= 600 BST (scale to 600)
 					elif(pokemon[dex_number][1] == 0 or pokemon[dex_number][1] == 5):
 						stat_arr[counter] = round((stat*600)/stat_sum)
@@ -208,17 +214,10 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 			
 			#The below offset shifts (19 from the sixth DV to the first Ability) did change from Gen IV to Gen IV, at least
 			#change Slakoth's and Slaking's Abilities to Comatose (D5) in gen VII and on, Unaware (6D) otherwise
-			if(dex_number == 287 or dex_number == 289):
-				
-				if(gen_number >= 7):
-					personal[pointer + 19] = 213
-					personal[pointer + 1 + 19] = 213
-					personal[pointer + 2 + 19] = 213
-					
-				elif(gen_number >= 4):
-					personal[pointer + 19] = 109
-					personal[pointer + 1 + 19] = 109
-					personal[pointer + 2 + 19] = 109
+			if(dex_number == 287 or dex_number == 289 and gen_number >= 7):
+				personal[pointer + 19] = 213
+				personal[pointer + 1 + 19] = 213
+				personal[pointer + 2 + 19] = 213
 				
 			#change Regigigas' Abilities to Sheer Force or Iron Fist
 			if(dex_number == 486):
@@ -347,6 +346,8 @@ def main_menu():
 	Button(frame_main_menu, text = 'Emerald', command = lambda: main('3.2'), height = 2, width = 50, pady = 1).pack()
 	
 	Button(frame_main_menu, text = 'Heart Gold/Soul Silver', command = lambda: main('4.1'), height = 2, width = 50, pady = 1).pack()
+	
+	Button(frame_main_menu, text = 'Platinum', command = lambda: main('4.2'), height = 2, width = 50, pady = 1).pack()
 	
 	Button(frame_main_menu, text = 'Black2/White2', command = lambda: main('5.1'), height = 2, width = 50, pady = 1).pack()
 	
