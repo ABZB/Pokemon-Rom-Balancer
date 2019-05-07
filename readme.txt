@@ -51,12 +51,12 @@ Section III: Instructions
 		
 		7) Rebuild the file or use Luma, Hans, etc. as desired.
 
-	(B) Gen III
+	(B) Gen III (FireRed, LeafGreen, Emerald)
 		1) Run 600 Balancer
 		
-		2) Select target game.
+		2) Select target game from the menu.
 		
-		3) Select the .gba file
+		3) Select the target .gba file.
 
 		4) You will be prompted to save a backup of the original file.
 		
