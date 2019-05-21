@@ -5,10 +5,47 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import asksaveasfilename
 from constants_pokemon import *
+import binascii
+import os
 
+def error_msg_box(tittext, msgtext):
+	#Msgbox = tk.messagebox.askquestion(tittext, msgtext, icon = 'warning')
+	print(tittext)
+	print(msgtext)
+	
+def scale(stat_arr, base_exp, target, gen_number, exp_bool, shedinja_bool = False, mega_bool = False):
+	bst = stat_arr[0] + stat_arr[1] + stat_arr[2] + stat_arr[3] + stat_arr[4] + stat_arr[5] 
+	
+	print('A', stat_arr, bst)
+	
+	if(mega_bool):
+		temp_hp = stat_arr[0]
+		
+		for t, s in enumerate(stat_arr):
+			stat_arr[t] = round((s*(700 - temp_hp))/(bst - temp_hp))
+		stat_arr[0] = temp_hp
+		
+	#is not a Pokemon Forme changed to in battle that keeps the same HP
+	else:
+		for t, s in enumerate(stat_arr):
+			stat_arr[t] = round((s*target)/bst)
+	
+	#If Pokemon is Shedinja, set HP to 1
+	if(shedinja_bool):
+		stat_arr[0] = 1
+	
+	#scale EXP if desired	
+	if(exp_bool):
+		base_exp = round(base_exp*target/bst)
+		if(gen_number >= 5):
+			base_exp = min(1023, base_exp)
+		else:
+			base_exp = min(255, base_exp)
+	
+	print('B', stat_arr)
+	return(stat_arr, base_exp)
 
-
-def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offset, gen_number):
+def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool):
 
 	
 	if(gen_number == 7.1):
@@ -18,7 +55,6 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 	
 	stat_arr = [0, 0, 0, 0, 0, 0]
 	
-	stat_sum = 0
 	
 	#Start with the first triplet - Bulba's HP and the following space
 	pointer = start_offset
@@ -35,8 +71,8 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 		#get the stats, the first 6 bytes
 		for i in range(6):
 			stat_arr[i] = personal[pointer + i]
-			stat_sum += personal[pointer + i]
-		print(stat_sum)
+			#stat_sum += personal[pointer + i]
+		#print(stat_sum)
 		
 		#begin mega/alt forme (that changes in battle) handling
 		try:
@@ -55,72 +91,75 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 		
 		#gen III has different index numbers, needs different catches
 		if(gen_number == 3.1 or gen_number == 3.2):
-			bst = stat_arr[0] + stat_arr[1] + stat_arr[2] + stat_arr[3] + stat_arr[4] + stat_arr[5] 
-			for counter, stat in enumerate(stat_arr):
-				#shedinja, scale everything as if to 400 but don't scale HP
-				if(dex_number == 303):
-					if(counter != 0):
-						stat_arr[counter] = round((stat*400)/stat_sum)
-					if(counter == 0):
-						personal[pointer + 4] = min(round((stat*400)/stat_sum), 255)
-				#slakoth
-				elif(dex_number == 364):
-					stat_arr[counter] = round((stat*500)/stat_sum)
-					if(counter == 0):
-						personal[pointer + 4] = min(round((stat*500)/stat_sum), 255)
-				#slaking
-				elif(dex_number == 366):
-					stat_arr[counter] = round((stat*720)/stat_sum)	
-					if(counter == 0):
-						personal[pointer + 4] = min(round((stat*720)/stat_sum), 255)
-				#evolves once more
-				elif(pokemon[dex_number][1] == 1):
-					stat_arr[counter] = round((stat*450)/stat_sum)
-					if(counter == 0):
-						personal[pointer + 4] = min(round((stat*450)/stat_sum), 255)
-				#evolves twice more
-				elif(pokemon[dex_number][1] == 2):
-					stat_arr[counter] = round((stat*300)/stat_sum)
-					if(counter == 0):
-						personal[pointer + 4] = min(round((stat*300)/stat_sum), 255)
-				#everything else that isn't greater than 600 gets scaled to 600
-				elif(bst < 600):
-					stat_arr[counter] = round((stat*600)/stat_sum)
-					if(counter == 0):
-						personal[pointer + 4] = min(round((stat*600)/stat_sum), 255)
-					
+			
+			if(all_bool):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+				if(dex_number == 303 and shedinja_bool):
+					stat_arr[0] = 1
+			elif(dex_number == 303 and shedinja_bool):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 400, gen_number, exp_bool, shedinja_bool = True)
+			#slakoth
+			elif(dex_number == 364):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+			#slaking
+			elif(dex_number == 366):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 720, gen_number, exp_bool)
+			#evolves once more
+			elif(pokemon[dex_number][1] == 1):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 450, gen_number, exp_bool)
+			#evolves twice more
+			elif(pokemon[dex_number][1] == 2):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 300, gen_number, exp_bool)
+			#everything else that isn't greater than 600 gets scaled to 600
+			elif(bst < 600):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+			elif(legend_bool and bst > 600):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+				
 				
 				
 		else:
-			for counter, stat in enumerate(stat_arr):
-				#evolves one more time
-				if(pokemon[dex_number][1] == 1):
-					stat_arr[counter] = round((stat*450)/stat_sum)
-				#evolves two more times
-				elif(pokemon[dex_number][1] == 2):
-					stat_arr[counter] = round((stat*300)/stat_sum)
-				#shedinja, scale everything as if to 400 but don't scale HP
-				elif(dex_number == 292):
-					if(counter != 0):
-						stat_arr[counter] = round((stat*400)/(stat_sum))
-				#Slakoth
-				elif(dex_number == 287 and gen_number < 7):
-					stat_arr[counter] = round((stat*600)/stat_sum)
-				#slaking
-				elif(dex_number == 289 and gen_number < 7):
-					stat_arr[counter] = round((stat*720)/stat_sum)
-				#fully evolved or Legendary with <= 600 BST (scale to 600)
-				elif(pokemon[dex_number][1] == 0 or pokemon[dex_number][1] == 5):
-					stat_arr[counter] = round((stat*600)/stat_sum)
-				#Mega Evolution of a Pokemon with <= 600 BST (Mega has <= 700 BST) (scale to 700)
-				elif(pokemon[dex_number][1] == 6):
-					#don't change HP
-					if(counter != 0):
-						stat_arr[counter] = round((stat*(700 - stat_arr[0]))/(stat_sum - stat_arr[0]))
+		
+			if(all_bool):
+				if(pokemon[dex_number][1] == 6 or pokemon[dex_number][1] == 7):
+					stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 700, gen_number, exp_bool, mega_bool = True)
 				elif(pokemon[dex_number][1] == 8):
-					#don't change HP
-					if(counter != 0):
-						stat_arr[counter] = round((stat*(600 - stat_arr[0]))/(stat_sum - stat_arr[0]))
+					stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool, mega_bool = True)
+				else:
+					stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+				if(dex_number == 292):
+					stat_arr[0] = 1
+			#evolves one more time
+			elif(pokemon[dex_number][1] == 1):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 450, gen_number, exp_bool)
+			#evolves two more times
+			elif(pokemon[dex_number][1] == 2):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 300, gen_number, exp_bool)
+			#shedinja, scale everything as if to 400 but don't scale HP
+			elif(dex_number == 292):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 400, gen_number, exp_bool, shedinja_bool = True)
+			#Slakoth without changed ability
+			elif(dex_number == 287 and not(ability_bool)):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+			#slaking without changed ability
+			elif(dex_number == 289 and not(ability_bool)):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 720, gen_number, exp_bool)
+			#Regigigas with changed ability
+			elif(dex_number == 486 and ability_bool):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+			#fully evolved or Legendary with <= 600 BST (scale to 600)
+			elif(pokemon[dex_number][1] == 0 or pokemon[dex_number][1] == 5):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+			#Mega Evolution of a Pokemon with <= 600 BST (Mega has <= 700 BST) (scale to 700)
+			elif(pokemon[dex_number][1] == 6):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 700, gen_number, exp_bool, mega_bool = True)
+			elif(pokemon[dex_number][1] == 8):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool, mega_bool = True)
+			#legendary_Pokemon
+			elif(legend_bool and bst > 600 and (pokemon[dex_number][1] != 7 and pokemon[dex_number][1] != 6)):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+			elif(legend_bool and bst > 700 and (pokemon[dex_number][1] == 7 or pokemon[dex_number][1] == 6)):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 700, gen_number, exp_bool)
 		
 		#if stat is over 255, redistribute the excess
 		while True:
@@ -190,20 +229,24 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 		for i in range(6):
 			personal[pointer + i] = temp[i]
 				
-		
-		#The below offset shifts (24 from the sixth DV to the first Ability) did change from Gen IV to Gen IV, at least
-		#change Slakoth's and Slaking's Abilities to Comatose (D5) in gen VII and on, Unaware (6D) otherwise
-		if(dex_number == 287 or dex_number == 289 and gen_number >= 7):
-			personal[pointer + 24] = 213
-			personal[pointer + 1 + 24] = 213
-			personal[pointer + 2 + 24] = 213
-			
-		#change Regigigas' Abilities to Sheer Force or Iron Fist
-		if(dex_number == 486 and gen_number >= 4):
-			personal[pointer + 24] = 125
-			personal[pointer + 1 + 24] = 89
-			if(gen_number >= 5):
-				personal[pointer + 2 + 24] = 125
+		if(ability_bool):
+			#The below offset shifts (24 from the sixth DV to the first Ability) did change from Gen IV to Gen IV, at least
+			#change Slakoth's and Slaking's Abilities to Comatose (D5) in gen VII and on, Unaware (6D) otherwise
+			if(dex_number == 287 or dex_number == 289):
+				if(gen_number >= 7):
+					personal[pointer + 24] = 213
+					personal[pointer + 1 + 24] = 213
+					personal[pointer + 2 + 24] = 213					
+				else:
+					personal[pointer + 24] = 109
+					personal[pointer + 1 + 24] = 109
+					
+			#change Regigigas' Abilities to Sheer Force or Iron Fist
+			if(dex_number == 486):
+				personal[pointer + 24] = 125
+				personal[pointer + 1 + 24] = 89
+				if(gen_number >= 5):
+					personal[pointer + 2 + 24] = 125
 		
 		if(dex_number >= max_index):
 			
@@ -280,7 +323,7 @@ def get_files(personal_file_path):
 	return(personal, personal_location)
 
 
-def main(gen_number):
+def main(gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool = False, all_bool = False):
 	try:
 		gen_number = int(gen_number)
 	except:
@@ -290,13 +333,20 @@ def main(gen_number):
 			print("Problem with Gen number:", gen_number, type(gen_number))
 	pokemon, base_formes, start_offset, offset, second_offset, personal_file_path = set_constants(gen_number)
 	
+	#print(shedinja_bool, ability_bool, legend_bool, all_bool)
+	if(legend_bool and all_bool):
+		error_msg_box('Conflicting Options Error', 'Scaling everything to 600 and scaling down Legendaries creates conflicts, please select at most one.')
+		return(False)
+	if(ability_bool and gen_number < 4):
+		error_msg_box('Ability Option Error', 'Ability modifier only available for Gen IV and later.')
+		return(False)
 	#root_main_menu.destroy()
 	
 	#get the data files and the output path
 	personal, output_path = get_files(personal_file_path)
 	
 	
-	personal_new = manipulate(personal, pokemon, base_formes, start_offset, offset, second_offset, gen_number)
+	personal_new = manipulate(personal, pokemon, base_formes, start_offset, offset, second_offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool)
 	
 	#seperates the file name (always a single character from HGSS on) from path
 	file_name = output_path[-1]
@@ -308,28 +358,94 @@ def main(gen_number):
 	save_binary_file(personal_new, file_name, output_path)
 
 def main_menu():
-	global root_main_menu
-	root_main_menu = Tk()
+	global master
+	master = Tk()
 
-	frame_main_menu = Frame(root_main_menu)
-	frame_main_menu.pack()
+	row_iter = 0
+	#frame_main_menu = Frame(master)
+	#frame_main_menu.pack()
 		
-	root_main_menu.title('Select Game to modify')
-
-	Button(frame_main_menu, text = 'Fire Red/Leaf Green', command = lambda: main('3.1'), height = 2, width = 50, pady = 1).pack()
+	master.title('Select Game to modify & modifications to apply')
+	#booleans variables for checkboxes
 	
-	Button(frame_main_menu, text = 'Emerald', command = lambda: main('3.2'), height = 2, width = 50, pady = 1).pack()
+	#also scale base exp.
+	exp_bool = BooleanVar()
 	
-	Button(frame_main_menu, text = 'Heart Gold/Soul Silver', command = lambda: main('4.1'), height = 2, width = 50, pady = 1).pack()
+	#Scale down Shedinja
+	shedinja_bool = BooleanVar()
 	
-	Button(frame_main_menu, text = 'Platinum', command = lambda: main('4.2'), height = 2, width = 50, pady = 1).pack()
+	#Change abilities
+	ability_bool = BooleanVar()
 	
-	Button(frame_main_menu, text = 'Black2/White2', command = lambda: main('5.1'), height = 2, width = 50, pady = 1).pack()
+	#Scale all pokemon with BST greater than 600 to 600
+	legend_bool = BooleanVar()
 	
-	Button(frame_main_menu, text = 'Ultra Sun/Ultra Moon', command = lambda: main('7.1'), height = 2, width = 50, pady = 1).pack()
+	#Scale all Pokemon, no matter what, to 600
+	all_bool = BooleanVar()
 	
-	Button(frame_main_menu, text="Exit", command = root_main_menu.destroy, height = 2, width = 25, pady = 1).pack()
+	#checkboxes and accompanying text
+	Label(master, text = 'Options', font = (16)).grid(row = row_iter)
 	
-	root_main_menu.mainloop()
+	row_iter +=1
+	
+	Checkbutton(master, text = 'Also scale Base Exp.', variable = exp_bool, onvalue = True, offvalue = False).grid(row = row_iter, sticky = W)
+	
+	row_iter +=1
+	
+	Checkbutton(master, text = 'Scale Down Shedinja', variable = shedinja_bool, onvalue = True, offvalue = False).grid(row = row_iter, sticky = W)
+	
+	row_iter +=1
+	
+	Checkbutton(master, text = 'Change Abilities of Slakoth, Slaking, and Regigigas', variable = ability_bool, onvalue = True, offvalue = False).grid(row = row_iter, sticky = W)
+	
+	row_iter +=1
+	
+	Checkbutton(master, text = 'Scale down [Legendary] Pokemon to 600', variable = legend_bool, onvalue = True, offvalue = False).grid(row = row_iter, sticky = W)
+	
+	row_iter +=1
+	
+	Checkbutton(master, text = 'Scale every Pokemon to 600, no matter what', variable = all_bool, onvalue = True, offvalue = False).grid(row = row_iter, sticky = W)
+	
+	row_iter +=1
+	
+	
+	#game selection
+	Label(master, text = 'Select Target', font = (16)).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Fire Red/Leaf Green', command = lambda: main('3.1', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Emerald', command = lambda: main('3.2', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Heart Gold/Soul Silver', command = lambda: main('4.1', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Platinum', command = lambda: main('4.2', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Black/White', command = lambda: main('5.0', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Black2/White2', command = lambda: main('5.1', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Ultra Sun/Ultra Moon', command = lambda: main('7.1', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text="Exit", command = master.destroy, height = 2, width = 25, pady = 1).grid(row = row_iter)
+	
+	master.mainloop()
+	
+	
 
 main_menu()
