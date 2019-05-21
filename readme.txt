@@ -9,7 +9,7 @@ Section II: Description of Edits
     This program scales the Base Stat Totals of all Pokemon as follows:
     
     1) Pokemon that evolve twice (like Bulbasaur or Porygon) get a BST of 300
-    2) Pokemon that evolve once (like Ivysaur or Eevee) get a BST of 400
+    2) Pokemon that evolve once (like Ivysaur or Eevee) get a BST of 450
     3) Pokemon that don't evolve:
         a) Legendaries with BST greater than 600 are not scaled
         b) Legendaries with a BST of less than 600, and all Pokemon that do not evolve (like Venusaur or Tauros), get a BST of 600, except for:
@@ -26,7 +26,25 @@ Section II: Description of Edits
     Details, including a Speed Tier calculator, can be found in the included Excel file.
 
 
-Section III: Instructions 
+Section III:: Explanation of Options:
+	Checkbutton(master, text = 'Also scale Base Exp.', variable = exp_bool, onvalue = True, offvalue = False).grid(row = 1, sticky = W)
+	Checkbutton(master, text = 'Scale Down Shedinja', variable = shedinja_bool, onvalue = True, offvalue = False).grid(row = 2, sticky = W)
+	Checkbutton(master, text = 'Change Abilities of Slakoth, Slaking, and Regigigas', variable = ability_bool, onvalue = True, offvalue = False).grid(row = 3, sticky = W)
+	Checkbutton(master, text = 'Scale down [Legendary] Pokemon to 600', variable = legend_bool, onvalue = True, offvalue = False).grid(row = 4, sticky = W)
+	Checkbutton(master, text = 'Scale every Pokemon to 600, no matter what', variable = ability_bool, onvalue = True, offvalue = False).grid(row = 5, sticky = W)
+	
+	(1) Also scale Base Exp - multiplies the base experience yield by the same multiplier that the base stats get multiplied by. This scales up the experience commensurately with the increased difficulty of the respective Pokemon. However, it can throw off level curves. I do not reccomend using this option except when the experience yield is scaled by relative level (like in Gen V), or in conjuction with a mod with a sharply increased level curve.
+	(2) 'Scale Down Shedinja' - Shedinja's BST will be scaled to 400 instead of 600.
+	(3) Change Abilities of Slakoth, Slaking, and Regigigas:
+		* Gen IV, Slakoth & Slaking get Unaware and are scaled to 300 and 600, and Regigigas gets Iron Fist and is scaled down to 600
+		* Gen V-VI Slakoth & Slaking get Unaware and are scaled to 300 and 600, and Regigigas gets Iron Fist and Sheer Force and is scaled down to 600
+		* Gen VII  Slakoth & Slaking get Comatose and are scaled to 300 and 600, and Regigigas gets Iron Fist and Sheer Force and is scaled down to 600
+	(4) Scale down [Legendary] Pokemon to 600 - All Legendary Pokemon with BTST > 600 are scaled down to 600
+	(5) Scale every Pokemon to 600, no matter what - All Pokemon, no matter their evolutionary stage, are scaled to 600. All Megas and Primal Reversions are scaled to 700.
+
+	* Note that option (3) cannot be selected for Gen III, and options (4) and (5) cannot both be selected at once.
+
+Section IV: Instructions 
 
 	(A) Gen IV and later
 
@@ -34,13 +52,13 @@ Section III: Instructions
 
 		2) Run 600 Balancer
 
-		3) Select the appropriate target game.
+		3) Check the desired options, then select the appropriate target game.
 
 		4) Select the appropriate file:
 
 				* HGSS: /a/0/0/2
 				* Platinum /poketool/personal/pl_personal.narc
-				* B2W2: /a/0/1/6
+				* BW & B2W2: /a/0/1/6
 				* USUSM: a/0/1/7
 
 		5) You will be prompted to save a backup of the original file.
@@ -54,7 +72,7 @@ Section III: Instructions
 	(B) Gen III (FireRed, LeafGreen, Emerald)
 		1) Run 600 Balancer
 		
-		2) Select target game from the menu.
+		2) Check the desired options, then select target game from the menu.
 		
 		3) Select the target .gba file.
 
