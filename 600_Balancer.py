@@ -5,8 +5,6 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 from tkinter.filedialog import asksaveasfilename
 from constants_pokemon import *
-import binascii
-import os
 
 def error_msg_box(tittext, msgtext):
 	#Msgbox = tk.messagebox.askquestion(tittext, msgtext, icon = 'warning')
