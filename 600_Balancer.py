@@ -84,6 +84,8 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 			if(dex_number == 701):
 				stat_arr[0] = output_stats[555][1][0]
 
+		#calculate the BST
+		bst = stat_arr[0] + stat_arr[1] + stat_arr[2] + stat_arr[3] + stat_arr[4] + stat_arr[5] 
 		
 		#scale the stats
 		
