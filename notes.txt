@@ -209,3 +209,7 @@ second copy starts from 18D30
 a017
 
 
+
+
+
+Crystal Clear index # at 514F0, first stat at offset +0x01, offset to next Pokemon is +0x20

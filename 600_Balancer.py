@@ -340,6 +340,8 @@ def main(gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool = False,
 	if(ability_bool and gen_number < 4):
 		error_msg_box('Ability Option Error', 'Ability modifier only available for Gen IV and later.')
 		return(False)
+	if(gen_number < 3 and (shedinja_bool or ability_bool)):
+		error_msg_box('Option Error', 'Ability and Shedinja modifiers do not apply to Gen II.')
 	#root_main_menu.destroy()
 	
 	#get the data files and the output path
@@ -411,6 +413,10 @@ def main_menu():
 	
 	#game selection
 	Label(master, text = 'Select Target', font = (16)).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Crystal', command = lambda: main('2.1', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
 	
 	row_iter +=1
 	
