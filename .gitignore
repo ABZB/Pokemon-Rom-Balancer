@@ -10,3 +10,4 @@
 *warn-*
 reset.py
 dist/reset.exe
+*.exe
