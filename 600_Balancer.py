@@ -52,9 +52,10 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 		for j in range(len(personal)):
 			#j is 01 and the next 6 values are Bulbasaur's stats
 			try:
-				if(personal[j] == 01 and personal[j + 1] == 45 and personal[j + 2] == 49 and personal[j + 3] == 49 and personal[j + 4] == 45 and personal[j + 5] == 65 and personal[j + 6] == 65):
+				if(personal[j] == 1 and personal[j + 1] == 45 and personal[j + 2] == 49 and personal[j + 3] == 49 and personal[j + 4] == 45 and personal[j + 5] == 65 and personal[j + 6] == 65):
 					#j is the index number, want to point to the next value, HP stat
 					start_offset = j + 1
+					print(start_offset)
 					break
 			except:
 				break
