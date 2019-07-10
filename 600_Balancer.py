@@ -16,29 +16,34 @@ def scale(stat_arr, base_exp, target, gen_number, exp_bool, shedinja_bool = Fals
 	
 	print('A', stat_arr, bst)
 	
-	if(mega_bool):
-		temp_hp = stat_arr[0]
-		
-		for t, s in enumerate(stat_arr):
-			stat_arr[t] = round((s*(700 - temp_hp))/(bst - temp_hp))
-		stat_arr[0] = temp_hp
-		
-	#is not a Pokemon Forme changed to in battle that keeps the same HP
-	else:
-		for t, s in enumerate(stat_arr):
-			stat_arr[t] = round((s*target)/bst)
-	
-	#If Pokemon is Shedinja, set HP to 1
-	if(shedinja_bool):
-		stat_arr[0] = 1
-	
-	#scale EXP if desired	
-	if(exp_bool):
-		base_exp = round(base_exp*target/bst)
-		if(gen_number >= 5):
-			base_exp = min(1023, base_exp)
+	#avoids divide by zero on blanks entries
+	try:
+		if(mega_bool):
+			temp_hp = stat_arr[0]
+			
+			for t, s in enumerate(stat_arr):
+				stat_arr[t] = round((s*(700 - temp_hp))/(bst - temp_hp))
+			stat_arr[0] = temp_hp
+			
+		#is not a Pokemon Forme changed to in battle that keeps the same HP
 		else:
-			base_exp = min(255, base_exp)
+			for t, s in enumerate(stat_arr):
+				stat_arr[t] = round((s*target)/bst)
+		
+		#If Pokemon is Shedinja, set HP to 1
+		if(shedinja_bool):
+			stat_arr[0] = 1
+		
+		#scale EXP if desired	
+		if(exp_bool):
+			base_exp = round(base_exp*target/bst)
+			if(gen_number >= 5):
+				base_exp = min(1023, base_exp)
+			else:
+				base_exp = min(255, base_exp)
+	
+	except:
+		print("Blank Entry (BST is 0)")
 	
 	print('B', stat_arr)
 	return(stat_arr, base_exp)
@@ -59,8 +64,9 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 					break
 			except:
 				break
-				
-	if(gen_number == 3.1 or gen_number == 3.2):
+	
+	#same for gen III
+	if(gen_number < 4 and gen_number > 2):
 		for j in range(len(personal)):
 			#j is 01 and the next 6 values are Bulbasaur's stats
 			try:
@@ -103,7 +109,7 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 			#if the Pokemon is a Mega, copy the HP from the base form:
 			if(pokemon[dex_number][1] == 6 or pokemon[dex_number][1] == 8):
 				#calls the updated HP from the base form (HP is the first stat)
-				base_number = base_form_reference_gen_7[dex_number][1]
+				base_number = base_formes[dex_number][1]
 				stat_arr[0] = output_stats[base_number][1][0]
 		#for Gen V, there are only two that can forme change in battle and have different stats - Meloetta and Darmanitan, and the former won't get scaled anyway (base 600).
 		except:
@@ -111,12 +117,14 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 				stat_arr[0] = output_stats[555][1][0]
 
 		#calculate the BST
-		bst = stat_arr[0] + stat_arr[1] + stat_arr[2] + stat_arr[3] + stat_arr[4] + stat_arr[5] 
+		bst = stat_arr[0] + stat_arr[1] + stat_arr[2] + stat_arr[3] + stat_arr[4] + stat_arr[5]
 		
 		#scale the stats
 		
 		#gen III has different index numbers, needs different catches
-		if(gen_number == 3.1 or gen_number == 3.2):
+		if(gen_number < 4 and gen_number > 2 and gen_number != 3.21):
+			
+			
 			
 			if(all_bool):
 				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
@@ -161,18 +169,33 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 			#evolves two more times
 			elif(pokemon[dex_number][1] == 2):
 				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 300, gen_number, exp_bool)
+				
 			#shedinja, scale everything as if to 400 but don't scale HP
-			elif(dex_number == 292):
+			elif(dex_number == 292 and gen_number >= 4):
 				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 400, gen_number, exp_bool, shedinja_bool = True)
 			#Slakoth without changed ability
-			elif(dex_number == 287 and not(ability_bool)):
+			elif(dex_number == 287 and not(ability_bool) and gen_number >= 4):
 				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
 			#slaking without changed ability
-			elif(dex_number == 289 and not(ability_bool)):
+			elif(dex_number == 289 and not(ability_bool) and gen_number >= 4):
 				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 720, gen_number, exp_bool)
 			#Regigigas with changed ability
-			elif(dex_number == 486 and ability_bool):
+			elif(dex_number == 486 and ability_bool and gen_number >= 4):
 				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+			
+			#Theta Emerald
+			
+			#shedinja, scale everything as if to 400 but don't scale HP
+			elif(dex_number == 303 and gen_number < 4):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 400, gen_number, exp_bool, shedinja_bool = True)
+			#slakoth
+			elif(dex_number == 364 and gen_number < 4):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+			#slaking
+			elif(dex_number == 366 and gen_number < 4):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 720, gen_number, exp_bool)
+			
+			
 			#fully evolved or Legendary with <= 600 BST (scale to 600)
 			elif(pokemon[dex_number][1] == 0 or pokemon[dex_number][1] == 5):
 				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
@@ -447,6 +470,10 @@ def main_menu():
 	row_iter +=1
 	
 	Button(master, text = 'Ruby/Sapphire/FireRed/LeafGreen/Emerald', command = lambda: main('3.2', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Theta Emerald Renev', command = lambda: main('3.21', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
 	
 	row_iter +=1
 	
