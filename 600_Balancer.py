@@ -122,7 +122,7 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 		#scale the stats
 		
 		#gen III has different index numbers, needs different catches
-		if(gen_number < 4 and gen_number > 2 and gen_number != 3.21):
+		if(gen_number < 4 and gen_number > 2 and gen_number != 3.21 and gen_number != 3.22):
 			
 			
 			
@@ -169,32 +169,34 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 			#evolves two more times
 			elif(pokemon[dex_number][1] == 2):
 				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 300, gen_number, exp_bool)
+			
+			
+			elif(gen_number >= 4):
+				#shedinja, scale everything as if to 400 but don't scale HP
+				if(dex_number == 292):
+					stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 400, gen_number, exp_bool, shedinja_bool = True)
+				#Slakoth without changed ability
+				elif(dex_number == 287 and not(ability_bool)):
+					stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+				#slaking without changed ability
+				elif(dex_number == 289 and not(ability_bool)):
+					stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 720, gen_number, exp_bool)
+				#Regigigas with changed ability
+				elif(dex_number == 486 and ability_bool):
+					stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+			
+			#gen III hacks
+			elif(gen_number < 4):
+				#shedinja, scale everything as if to 400 but don't scale HP
+				if(dex_number == 303):
+					stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 400, gen_number, exp_bool, shedinja_bool = True)
+				#slakoth
+				elif(dex_number == 364):
+					stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+				#slaking
+				elif(dex_number == 366):
+					stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 720, gen_number, exp_bool)
 				
-			#shedinja, scale everything as if to 400 but don't scale HP
-			elif(dex_number == 292 and gen_number >= 4):
-				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 400, gen_number, exp_bool, shedinja_bool = True)
-			#Slakoth without changed ability
-			elif(dex_number == 287 and not(ability_bool) and gen_number >= 4):
-				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
-			#slaking without changed ability
-			elif(dex_number == 289 and not(ability_bool) and gen_number >= 4):
-				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 720, gen_number, exp_bool)
-			#Regigigas with changed ability
-			elif(dex_number == 486 and ability_bool and gen_number >= 4):
-				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
-			
-			#Theta Emerald
-			
-			#shedinja, scale everything as if to 400 but don't scale HP
-			elif(dex_number == 303 and gen_number < 4):
-				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 400, gen_number, exp_bool, shedinja_bool = True)
-			#slakoth
-			elif(dex_number == 364 and gen_number < 4):
-				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
-			#slaking
-			elif(dex_number == 366 and gen_number < 4):
-				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 720, gen_number, exp_bool)
-			
 			
 			#fully evolved or Legendary with <= 600 BST (scale to 600)
 			elif(pokemon[dex_number][1] == 0 or pokemon[dex_number][1] == 5):
@@ -474,6 +476,10 @@ def main_menu():
 	row_iter +=1
 	
 	Button(master, text = 'Theta Emerald Renev', command = lambda: main('3.21', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Blazed Glazed', command = lambda: main('3.22', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
 	
 	row_iter +=1
 	
