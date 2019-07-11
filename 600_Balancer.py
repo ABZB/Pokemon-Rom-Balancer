@@ -169,8 +169,22 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 			#evolves two more times
 			elif(pokemon[dex_number][1] == 2):
 				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 300, gen_number, exp_bool)
+				
 			
-			
+			#fully evolved or Legendary with <= 600 BST (scale to 600)
+			elif(pokemon[dex_number][1] == 0 or pokemon[dex_number][1] == 5):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+			#Mega Evolution of a Pokemon with <= 600 BST (Mega has <= 700 BST) (scale to 700)
+			elif(pokemon[dex_number][1] == 6):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 700, gen_number, exp_bool, mega_bool = True)
+			elif(pokemon[dex_number][1] == 8):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool, mega_bool = True)
+			#legendary_Pokemon
+			elif(legend_bool and bst > 600 and (pokemon[dex_number][1] != 7 and pokemon[dex_number][1] != 6)):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
+			elif(legend_bool and bst > 700 and (pokemon[dex_number][1] == 7 or pokemon[dex_number][1] == 6)):
+				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 700, gen_number, exp_bool)
+		
 			elif(gen_number >= 4):
 				#shedinja, scale everything as if to 400 but don't scale HP
 				if(dex_number == 292):
@@ -196,22 +210,7 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 				#slaking
 				elif(dex_number == 366):
 					stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 720, gen_number, exp_bool)
-				
-			
-			#fully evolved or Legendary with <= 600 BST (scale to 600)
-			elif(pokemon[dex_number][1] == 0 or pokemon[dex_number][1] == 5):
-				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
-			#Mega Evolution of a Pokemon with <= 600 BST (Mega has <= 700 BST) (scale to 700)
-			elif(pokemon[dex_number][1] == 6):
-				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 700, gen_number, exp_bool, mega_bool = True)
-			elif(pokemon[dex_number][1] == 8):
-				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool, mega_bool = True)
-			#legendary_Pokemon
-			elif(legend_bool and bst > 600 and (pokemon[dex_number][1] != 7 and pokemon[dex_number][1] != 6)):
-				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
-			elif(legend_bool and bst > 700 and (pokemon[dex_number][1] == 7 or pokemon[dex_number][1] == 6)):
-				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 700, gen_number, exp_bool)
-		
+					
 		#if stat is over 255, redistribute the excess
 		while True:
 			
