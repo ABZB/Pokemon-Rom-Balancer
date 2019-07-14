@@ -53,6 +53,9 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 	
 	#if Gen II, we can search through the file for the literal index numbers
 	
+	temp_pointer = start_offset
+	bulb_count = 0
+	
 	if(gen_number == 2.1):
 		for j in range(len(personal)):
 			#j is 01 and the next 6 values are Bulbasaur's stats
@@ -65,15 +68,19 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 			except:
 				break
 	
+	
 	#same for gen III
 	if(gen_number < 4 and gen_number > 2):
 		for j in range(len(personal)):
 			#j is 01 and the next 6 values are Bulbasaur's stats
 			try:
 				if(personal[j] == 45 and personal[j + 1] == 49 and personal[j + 2] == 49 and personal[j + 3] == 45 and personal[j + 4] == 65 and personal[j + 5] == 65):
-					#j is the index number, want to point to the next value, HP stat
-					start_offset = j
-					break
+					bulb_count += 1
+					#want to find the last Bulbasaur occurence, this is usually the right one
+					if(j >= temp_pointer):
+						temp_pointer = j
+						if(bulb_count > 1):
+							break
 			except:
 				break
 		
@@ -122,7 +129,7 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 		#scale the stats
 		
 		#gen III has different index numbers, needs different catches
-		if(gen_number < 4 and gen_number > 2 and gen_number != 3.21 and gen_number != 3.22):
+		if(gen_number < 4 and gen_number > 2 and gen_number != 3.21 and gen_number != 3.22 and gen_number != 3.11):
 			
 			
 			
@@ -473,6 +480,11 @@ def main_menu():
 	Button(master, text = 'Ruby/Sapphire/FireRed/LeafGreen/Emerald', command = lambda: main('3.2', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
 	
 	row_iter +=1
+	
+	Button(master, text = 'Gaia', command = lambda: main('3.11', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
 	
 	Button(master, text = 'Theta Emerald Renev', command = lambda: main('3.21', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
 	
