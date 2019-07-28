@@ -485,12 +485,20 @@ def main_menu():
 	
 	row_iter +=1
 	
+	Button(master, text = 'Ultra Shiny Gold Sigma', command = lambda: main('3.12', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
 	
 	Button(master, text = 'Theta Emerald Renev', command = lambda: main('3.21', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
 	
 	row_iter +=1
 	
 	Button(master, text = 'Blazed Glazed', command = lambda: main('3.22', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Hyper Emerald Z', command = lambda: main('3.23', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
 	
 	row_iter +=1
 	
