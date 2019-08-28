@@ -85,8 +85,8 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 				break
 		
 	
-	if(gen_number == 7.1):
-		in_first_block = True
+	#if(gen_number == 7.1):
+	#	in_first_block = True
 		
 	max_index = len(pokemon) - 1
 	
@@ -305,7 +305,7 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 		if(dex_number >= max_index):
 			
 			#gen vii has a second, repeat block
-			if(gen_number == 7.1):
+			if(False):#gen_number == 7.1):
 				if(in_first_block):
 					in_first_block = False
 					pointer = second_offset
@@ -329,7 +329,13 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 				#print list of modified stats
 				for elm in output_stats:
 					print(elm)
-
+						
+				#print mega and base list
+				if(gen_number >= 6):
+					print('\n')
+					for elm in mega_list:
+						print(output_stats[elm[0]])
+						print("m", output_stats[elm[1]])
 				break
 			
 		#zero out the stat array and sum

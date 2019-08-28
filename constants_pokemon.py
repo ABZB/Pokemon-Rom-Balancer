@@ -234,7 +234,7 @@ def set_constants(generation_id):
 		
 		start_offset = 19696 #0x4CF0
 		offset = 84
-		second_offset = 152520 #101680
+		second_offset = 0 #152520 #101680
 		personal_file_path = "a/0/1/7"
 		
 	return(pokemon, base_formes, start_offset, offset, second_offset, personal_file_path)
