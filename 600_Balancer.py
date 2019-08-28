@@ -130,9 +130,6 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 		
 		#gen III has different index numbers, needs different catches
 		if(gen_number < 4 and gen_number > 2 and gen_number != 3.21 and gen_number != 3.22 and gen_number != 3.11):
-			
-			
-			
 			if(all_bool):
 				stat_arr, personal[pointer + 4] = scale(stat_arr, personal[pointer + 4], 600, gen_number, exp_bool)
 				if(dex_number == 303 and shedinja_bool):
@@ -366,7 +363,7 @@ def get_files(personal_file_path):
 	#get hex file locations:
 	#root = Tk()
 	#root.update()
-	personal_location = askopenfilename(filetypes = (("Select Personal File", "*.*"), ("All Files", "*.*")))
+	personal_location = askopenfilename(filetypes = (("Select Personal File: " + personal_file_path, "*.*"), ("All Files", "*.*")))
 	#root.destroy()
 	
 	#get the data
@@ -486,6 +483,10 @@ def main_menu():
 	row_iter +=1
 	
 	Button(master, text = 'Ultra Shiny Gold Sigma', command = lambda: main('3.12', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Nameless Fire Red', command = lambda: main('3.13', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
 	
 	row_iter +=1
 	
