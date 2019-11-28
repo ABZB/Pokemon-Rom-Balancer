@@ -87,7 +87,7 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 	
 	#if(gen_number == 7.1):
 	#	in_first_block = True
-		
+	
 	max_index = len(pokemon) - 1
 	
 	stat_arr = [0, 0, 0, 0, 0, 0]
@@ -124,6 +124,7 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 				stat_arr[0] = output_stats[555][1][0]
 
 		#calculate the BST
+		print(stat_arr[0],stat_arr[1],stat_arr[2],stat_arr[3],stat_arr[4],stat_arr[5])
 		bst = stat_arr[0] + stat_arr[1] + stat_arr[2] + stat_arr[3] + stat_arr[4] + stat_arr[5]
 		
 		#scale the stats
@@ -522,6 +523,14 @@ def main_menu():
 	row_iter +=1
 	
 	Button(master, text = 'Black2/White2', command = lambda: main('5.1', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'X/Y', command = lambda: main('6.0', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
+	
+	row_iter +=1
+	
+	Button(master, text = 'Omega Ruby/Alpha Sapphire', command = lambda: main('6.1', exp_bool.get(), shedinja_bool.get(), ability_bool.get(), legend_bool.get(), all_bool.get()), height = 2, width = 50, pady = 1).grid(row = row_iter)
 	
 	row_iter +=1
 	
