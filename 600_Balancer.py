@@ -109,23 +109,22 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, gen_number,
 		bulb_bool = True
 		while True:
 			bulb_offset = bulb_finder(personal, gen_number, start_offset)
-			print(bulb_offset)
-			try:				
+							
+			#If bulb_finder returns false, we're at the end of the file
+			if(not(bulb_offset)):
+				print("Found and modified", bulb_count, "copies of Pokemon data.")
+				return(personal)
+			else:
 				#set up for next bulb_finder, also forces exception if bulb_offset is False
 				start_offset = bulb_offset + 1
 				
-				personal = process_data(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, bulb_bool)
+				personal = process_data(personal, pokemon, base_formes, bulb_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, bulb_bool)
 				
 				#ensures that the console only prints the final output once
 				bulb_bool = False
 				
 				bulb_count += 1
 				
-			#If bulb_finder returns false, we're at the end of the file
-			except:
-				print("Found and modified", bulb_count, "copies of Pokemon data.")
-				return(personal)
-		
 def process_data(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, print_bool):
 	
 	#if(gen_number == 7.1):
@@ -346,7 +345,7 @@ def process_data(personal, pokemon, base_formes, start_offset, offset, gen_numbe
 					personal[pointer + 2 + 24] = 125
 		
 		if(dex_number >= max_index):
-			if(print_bool)
+			if(print_bool):
 				#print list of modified stats
 				for elm in output_stats:
 					print(elm)
@@ -354,6 +353,7 @@ def process_data(personal, pokemon, base_formes, start_offset, offset, gen_numbe
 				#print mega and base list
 				if(gen_number >= 6):
 					print('\n')
+					print("Megas")
 					for elm in mega_list:
 						print(output_stats[elm[0]])
 						print("m", output_stats[elm[1]])
@@ -375,11 +375,11 @@ def process_data(personal, pokemon, base_formes, start_offset, offset, gen_numbe
 	
 	
 #takes in bytearray, saves bytes to file
-def save_binary_file(data, file_name, path):
+def save_binary_file(instructions, data, file_name, path):
 
 	root = Tk()
 	root.update()
-	output_path = asksaveasfilename(initialdir = path,  defaultextension = "", initialfile = file_name)
+	output_path = asksaveasfilename(title = instructions, initialdir = path,  defaultextension = "", initialfile = file_name)
 	root.destroy()
 	
 	output_binary = bytes(data)
@@ -430,17 +430,26 @@ def main(gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool = False,
 	#get the data files and the output path
 	personal, output_path = get_files(personal_file_path)
 	
-	
+	#seperates the file name (always a single character from HGSS on) from path
+	if(gen_number >= 4):
+		file_name = output_path[-1]
+		output_path = output_path[:-1]
+	else:
+		file_name = balanced_output.gba
+		
+	try:
+		save_binary_file('Save Backup', personal, file_name + '.bak', output_path)
+	except:
+		print("No Backup created")
+		
 	personal_new = manipulate(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool)
 	
-	#seperates the file name (always a single character from HGSS on) from path
-	file_name = output_path[-1]
-	output_path = output_path[:-1]
-	
-	
-	save_binary_file(personal, file_name + '.bak', output_path)
-	
-	save_binary_file(personal_new, file_name, output_path)
+		
+		
+	try:
+		save_binary_file('Save edited file', personal_new, file_name, output_path)
+	except:
+		print("Please note that you exited without saving the output")
 
 def main_menu():
 	global master
