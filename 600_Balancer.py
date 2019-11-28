@@ -11,10 +11,58 @@ def error_msg_box(tittext, msgtext):
 	print(tittext)
 	print(msgtext)
 	
+#locates the next place where Bulbasaur's stats are, and return the address
+def bulb_finder(personal, gen_number, start_offset):
+	bulb_count = 0
+	
+	#first byte of each Pokemon's data is its index number
+	if(gen_number <= 2.1):
+		for j in range(len(personal)):
+			#j is 01 and the next 6 values are Bulbasaur's stats
+			try:
+				if(personal[j] == 1 and personal[j + 1] == 45 and personal[j + 2] == 49 and personal[j + 3] == 49 and personal[j + 4] == 45 and personal[j + 5] == 65 and personal[j + 6] == 65):
+					#j is the index number, want to point to the next value, HP stat
+					start_offset = j + 1
+					print(start_offset)
+					break
+			except:
+				break
+	
+	#make sure we have the right block of data, if the Pokedex was expanded
+	#same for gen III
+	elif(gen_number < 4 and gen_number > 2):
+		for j in range(len(personal)):
+			try:
+				if(personal[j] == 45 and personal[j + 1] == 49 and personal[j + 2] == 49 and personal[j + 3] == 45 and personal[j + 4] == 65 and personal[j + 5] == 65):
+					bulb_count += 1
+					#want to find the last Bulbasaur occurence, this is usually the right one
+					if(j >= start_offset):
+						start_offset = j
+						if(bulb_count > 1):
+							break
+			except:
+				break
+	#for later gens, the file being considered only has the personal data. If we ever manage to add to them, it will still be here. There are duplicities starting in Gen VI, need to hit all of them so find all Bulbasaurs
+	else:
+		temp_offset = start_offset
+		while True:
+			
+			try:
+				if(personal[start_offset] == 45 and personal[start_offset + 1] == 49 and personal[start_offset + 2] == 49 and personal[start_offset + 3] == 45 and personal[start_offset + 4] == 65 and personal[start_offset + 5] == 65):
+					break
+				else:
+					start_offset += 1
+			#File has ended
+			except:
+				return(False)
+	#return byte holding Bulbasaur's HP
+	return(start_offset)
+		
+	
 def scale(stat_arr, base_exp, target, gen_number, exp_bool, shedinja_bool = False, mega_bool = False):
 	bst = stat_arr[0] + stat_arr[1] + stat_arr[2] + stat_arr[3] + stat_arr[4] + stat_arr[5] 
 	
-	print('A', stat_arr, bst)
+	#print('A', stat_arr, bst)
 	
 	#avoids divide by zero on blanks entries
 	try:
@@ -45,45 +93,40 @@ def scale(stat_arr, base_exp, target, gen_number, exp_bool, shedinja_bool = Fals
 	except:
 		print("Blank Entry (BST is 0)")
 	
-	print('B', stat_arr)
+	#print('B', stat_arr)
 	return(stat_arr, base_exp)
 
-def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool):
+#calls bulbfinder once in Generations 1-5, then processes the data. In gens after that, it runs bulbfinder and processes each block until it runs out of file.
+def manipulate(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool):
+
+	if(gen_number < 6):
+		bulb_offset = bulb_finder(personal, gen_number, start_offset)
+		return(process_data(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, True))
 	
-	
-	#if Gen II, we can search through the file for the literal index numbers
-	
-	temp_pointer = start_offset
-	bulb_count = 0
-	
-	if(gen_number == 2.1):
-		for j in range(len(personal)):
-			#j is 01 and the next 6 values are Bulbasaur's stats
-			try:
-				if(personal[j] == 1 and personal[j + 1] == 45 and personal[j + 2] == 49 and personal[j + 3] == 49 and personal[j + 4] == 45 and personal[j + 5] == 65 and personal[j + 6] == 65):
-					#j is the index number, want to point to the next value, HP stat
-					start_offset = j + 1
-					print(start_offset)
-					break
+	#data repeats
+	else:
+		bulb_count = 0
+		bulb_bool = True
+		while True:
+			bulb_offset = bulb_finder(personal, gen_number, start_offset)
+			print(bulb_offset)
+			try:				
+				#set up for next bulb_finder, also forces exception if bulb_offset is False
+				start_offset = bulb_offset + 1
+				
+				personal = process_data(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, bulb_bool)
+				
+				#ensures that the console only prints the final output once
+				bulb_bool = False
+				
+				bulb_count += 1
+				
+			#If bulb_finder returns false, we're at the end of the file
 			except:
-				break
-	
-	
-	#same for gen III
-	if(gen_number < 4 and gen_number > 2):
-		for j in range(len(personal)):
-			#j is 01 and the next 6 values are Bulbasaur's stats
-			try:
-				if(personal[j] == 45 and personal[j + 1] == 49 and personal[j + 2] == 49 and personal[j + 3] == 45 and personal[j + 4] == 65 and personal[j + 5] == 65):
-					bulb_count += 1
-					#want to find the last Bulbasaur occurence, this is usually the right one
-					if(j >= temp_pointer):
-						temp_pointer = j
-						if(bulb_count > 1):
-							break
-			except:
-				break
+				print("Found and modified", bulb_count, "copies of Pokemon data.")
+				return(personal)
 		
+def process_data(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, print_bool):
 	
 	#if(gen_number == 7.1):
 	#	in_first_block = True
@@ -104,7 +147,7 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 	#read the file character by character
 	while True:
 		
-		print(dex_number)
+		#print(dex_number)
 		#get the stats, the first 6 bytes
 		for i in range(6):
 			stat_arr[i] = personal[pointer + i]
@@ -124,7 +167,6 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 				stat_arr[0] = output_stats[555][1][0]
 
 		#calculate the BST
-		print(stat_arr[0],stat_arr[1],stat_arr[2],stat_arr[3],stat_arr[4],stat_arr[5])
 		bst = stat_arr[0] + stat_arr[1] + stat_arr[2] + stat_arr[3] + stat_arr[4] + stat_arr[5]
 		
 		#scale the stats
@@ -304,29 +346,7 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 					personal[pointer + 2 + 24] = 125
 		
 		if(dex_number >= max_index):
-			
-			#gen vii has a second, repeat block
-			if(False):#gen_number == 7.1):
-				if(in_first_block):
-					in_first_block = False
-					pointer = second_offset
-					#will get incremented at the end of the loop
-					dex_number = 0
-				#otherwise print the results and finish
-				else:
-					#print list of modified stats
-					for elm in output_stats:
-						print(elm)
-						
-					#print mega and base list
-					if(gen_number >= 6):
-						print('\n')
-						for elm in mega_list:
-							print(output_stats[elm[0]])
-							print("m", output_stats[elm[1]])
-					break
-			#otherwise print the results and finish
-			else:
+			if(print_bool)
 				#print list of modified stats
 				for elm in output_stats:
 					print(elm)
@@ -337,7 +357,9 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, second_offs
 					for elm in mega_list:
 						print(output_stats[elm[0]])
 						print("m", output_stats[elm[1]])
-				break
+				output_stats = []
+				mega_list = []
+			break
 			
 		#zero out the stat array and sum
 		for stat in stat_arr:
@@ -392,7 +414,7 @@ def main(gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool = False,
 			gen_number = float(gen_number)
 		except:
 			print("Problem with Gen number:", gen_number, type(gen_number))
-	pokemon, base_formes, start_offset, offset, second_offset, personal_file_path = set_constants(gen_number)
+	pokemon, base_formes, start_offset, offset, personal_file_path = set_constants(gen_number)
 	
 	#print(shedinja_bool, ability_bool, legend_bool, all_bool)
 	if(legend_bool and all_bool):
@@ -409,7 +431,7 @@ def main(gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool = False,
 	personal, output_path = get_files(personal_file_path)
 	
 	
-	personal_new = manipulate(personal, pokemon, base_formes, start_offset, offset, second_offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool)
+	personal_new = manipulate(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool)
 	
 	#seperates the file name (always a single character from HGSS on) from path
 	file_name = output_path[-1]
