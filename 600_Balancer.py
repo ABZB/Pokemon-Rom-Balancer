@@ -435,7 +435,7 @@ def main(gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool = False,
 		file_name = output_path[-1]
 		output_path = output_path[:-1]
 	else:
-		file_name = balanced_output.gba
+		file_name = 'balanced_output.gba'
 		
 	try:
 		save_binary_file('Save Backup', personal, file_name + '.bak', output_path)
