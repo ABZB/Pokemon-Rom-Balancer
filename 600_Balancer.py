@@ -56,6 +56,7 @@ def bulb_finder(personal, gen_number, start_offset):
 			except:
 				return(False)
 	#return byte holding Bulbasaur's HP
+	print(start_offset)
 	return(start_offset)
 		
 	
@@ -97,7 +98,7 @@ def scale(stat_arr, base_exp, target, gen_number, exp_bool, shedinja_bool = Fals
 	return(stat_arr, base_exp)
 
 #calls bulbfinder once in Generations 1-5, then processes the data. In gens after that, it runs bulbfinder and processes each block until it runs out of file.
-def manipulate(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool):
+def manipulate(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, bulb_count = 0):
 
 	if(gen_number < 6):
 		bulb_offset = bulb_finder(personal, gen_number, start_offset)
@@ -105,25 +106,23 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, gen_number,
 	
 	#data repeats
 	else:
-		bulb_count = 0
-		bulb_bool = True
-		while True:
-			bulb_offset = bulb_finder(personal, gen_number, start_offset)
-							
-			#If bulb_finder returns false, we're at the end of the file
-			if(not(bulb_offset)):
-				print("Found and modified", bulb_count, "copies of Pokemon data.")
-				return(personal)
-			else:
-				#set up for next bulb_finder, also forces exception if bulb_offset is False
-				start_offset = bulb_offset + 1
-				
-				personal = process_data(personal, pokemon, base_formes, bulb_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, bulb_bool)
-				
-				#ensures that the console only prints the final output once
-				bulb_bool = False
-				
-				bulb_count += 1
+		bulb_offset = bulb_finder(personal, gen_number, start_offset)
+		#If bulb_finder returns false, we're at the end of the file
+		if(not(bulb_offset)):
+			print("Found and modified", bulb_count, "copies of Pokemon data.")
+			return(personal)
+		else:
+			#process the current block
+			personal = process_data(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, print_bool)
+			#set up for next bulb_finder, also forces exception if bulb_offset is False
+			bulb_count += 1
+			start_offset = bulb_offset + 1
+			
+			#recur into next block
+			personal = manipulate(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, bulb_count)
+			#ensures that the console only prints the final output once
+			
+		return(personal)
 				
 def process_data(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, print_bool):
 	
