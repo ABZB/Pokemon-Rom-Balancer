@@ -28,18 +28,14 @@ def bulb_finder(personal, gen_number, start_offset):
 			except:
 				break
 	
-	#make sure we have the right block of data, if the Pokedex was expanded
-	#same for gen III
+	#For Gen III make sure we have the right block of data, if the Pokedex was expanded (in which case we want the last occurence of Bulbasaur)
 	elif(gen_number < 4 and gen_number > 2):
 		for j in range(len(personal)):
 			try:
 				if(personal[j] == 45 and personal[j + 1] == 49 and personal[j + 2] == 49 and personal[j + 3] == 45 and personal[j + 4] == 65 and personal[j + 5] == 65):
 					bulb_count += 1
-					#want to find the last Bulbasaur occurence, this is usually the right one
-					if(j >= start_offset):
-						start_offset = j
-						if(bulb_count > 1):
-							break
+					start_offset = j
+			#when we reach the end of the file, the try block will return a (read) error, so we exit the for loop remembering the last start_offset
 			except:
 				break
 	#for later gens, the file being considered only has the personal data. If we ever manage to add to them, it will still be here. There are duplicities starting in Gen VI, need to hit all of them so find all Bulbasaurs
@@ -102,7 +98,8 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, gen_number,
 
 	if(gen_number < 6):
 		bulb_offset = bulb_finder(personal, gen_number, start_offset)
-		return(process_data(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, True))
+		#replace start_offset with bulb_offset
+		return(process_data(personal, pokemon, base_formes, bulb_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, True))
 	
 	#data repeats
 	else:
