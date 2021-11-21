@@ -95,7 +95,7 @@ def scale(stat_arr, base_exp, target, gen_number, exp_bool, shedinja_bool = Fals
 
 #calls bulbfinder once in Generations 1-5, then processes the data. In gens after that, it runs bulbfinder and processes each block until it runs out of file.
 def manipulate(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, bulb_count = 0):
-
+	
 	if(gen_number < 6):
 		bulb_offset = bulb_finder(personal, gen_number, start_offset)
 		#replace start_offset with bulb_offset
@@ -110,7 +110,11 @@ def manipulate(personal, pokemon, base_formes, start_offset, offset, gen_number,
 			return(personal)
 		else:
 			#process the current block
-			personal = process_data(personal, pokemon, base_formes, start_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, print_bool)
+			if(bulb_count > 0):
+				print_bool = False
+			else:
+				print_bool = True
+			personal = process_data(personal, pokemon, base_formes, bulb_offset, offset, gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool, all_bool, print_bool)
 			#set up for next bulb_finder, also forces exception if bulb_offset is False
 			bulb_count += 1
 			start_offset = bulb_offset + 1
@@ -142,13 +146,12 @@ def process_data(personal, pokemon, base_formes, start_offset, offset, gen_numbe
 	#read the file character by character
 	while True:
 		
-		#print(dex_number)
+		
 		#get the stats, the first 6 bytes
 		for i in range(6):
 			stat_arr[i] = personal[pointer + i]
 			#stat_sum += personal[pointer + i]
-		#print(stat_sum)
-		
+		#print(dex_number, stat_arr)
 		#begin mega/alt forme (that changes in battle) handling
 		try:
 			#if the Pokemon is a Mega, copy the HP from the base form:
@@ -404,10 +407,10 @@ def get_files(personal_file_path):
 
 def main(gen_number, exp_bool, shedinja_bool, ability_bool, legend_bool = False, all_bool = False):
 	try:
-		gen_number = int(gen_number)
+		gen_number = float(gen_number)
 	except:
 		try:
-			gen_number = float(gen_number)
+			gen_number = int(gen_number)
 		except:
 			print("Problem with Gen number:", gen_number, type(gen_number))
 	pokemon, base_formes, start_offset, offset, personal_file_path = set_constants(gen_number)
